@@ -10,6 +10,27 @@ from papers.models import Paper
 from conferences.models import Conference
 from user_app.models import CustomUser
 
+class BaseConferenceCreateView(generics.CreateAPIView):
+    def create(self, request, *args, **kwargs):
+        conf_acronym = self.kwargs['conf']
+        conference = get_object_or_404(models.Conference, acronym=conf_acronym)
+
+        email = request.data.get('email')
+        if not email:
+            return Response({"detail": "Email field is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user, created = CustomUser.objects.get_or_create(email=email)
+
+        instance = self.get_queryset().model()
+        instance.conference.set([conference])
+        instance.user.set([user])
+        instance.save()
+
+        if created:
+            return Response({"detail": "User created and added to the conference."}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"detail": "User added to the conference."}, status=status.HTTP_201_CREATED)
+
 class EditorConferenceListView(generics.ListAPIView):
     serializer_class = serializers.EditorConferenceListSerializer
     permission_classes = [IsAuthenticated]
@@ -23,28 +44,12 @@ class EditorConferenceListView(generics.ListAPIView):
     def get_view_name(self):
         return "Editors of Conference - List"
 
-class EditorConferenceCreateView(generics.CreateAPIView):
+class EditorConferenceCreateView(BaseConferenceCreateView):
     serializer_class = serializers.EditorConferenceCreateSerializer
     permission_classes = [permissions.CanAddToConference]
 
-    def create(self, request, *args, **kwargs):
-        conf_acronym = self.kwargs['conf']
-        conference = get_object_or_404(models.Conference, acronym=conf_acronym)
-
-        email = request.data.get('email')
-        if not email:
-            return Response({"detail": "Email field is required."}, status=status.HTTP_400_BAD_REQUEST)
-
-        user, created = CustomUser.objects.get_or_create(email=email)
-
-        editor_conference = models.EditorConference.objects.create()
-        editor_conference.conference.set([conference])
-        editor_conference.user.set([user])
-
-        if created:
-            return Response({"detail": "User created and added as an editor to the conference."}, status=status.HTTP_201_CREATED)
-        else:
-            return Response({"detail": "User added as an editor to the conference."}, status=status.HTTP_201_CREATED)
+    def get_queryset(self):
+        return models.EditorConference.objects.all()
     
     def get_view_name(self):
         return "Add Editor to Conference"
@@ -62,28 +67,12 @@ class ReviewerConferenceListView(generics.ListAPIView):
     def get_view_name(self):
         return "Reviewers of Conference - List"
 
-class ReviewerConferenceCreateView(generics.CreateAPIView):
+class ReviewerConferenceCreateView(BaseConferenceCreateView):
     serializer_class = serializers.ReviewerConferenceCreateSerializer
     permission_classes = [permissions.CanAddToConference]
 
-    def create(self, request, *args, **kwargs):
-        conf_acronym = self.kwargs['conf']
-        conference = get_object_or_404(models.Conference, acronym=conf_acronym)
-
-        email = request.data.get('email')
-        if not email:
-            return Response({"detail": "Email field is required."}, status=status.HTTP_400_BAD_REQUEST)
-
-        user, created = CustomUser.objects.get_or_create(email=email)
-
-        reviewer_conference = models.ReviewerConference.objects.create()
-        reviewer_conference.conference.set([conference])
-        reviewer_conference.user.set([user])
-
-        if created:
-            return Response({"detail": "User created and added as an editor to the conference."}, status=status.HTTP_201_CREATED)
-        else:
-            return Response({"detail": "User added as an editor to the conference."}, status=status.HTTP_201_CREATED)
+    def get_queryset(self):
+        return models.ReviewerConference.objects.all()
     
     def get_view_name(self):
         return "Add Reviewers to Conference"

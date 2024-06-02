@@ -21,6 +21,17 @@ class PaperSerializer(serializers.ModelSerializer):
         model = models.Paper
         fields = ('id', 'title', 'file')
 
+class BaseConferenceCreateSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(write_only=True)
+
+    class Meta:
+        fields = ['email']
+
+    def validate_email(self, value):
+        if not value:
+            raise serializers.ValidationError("Email field is required.")
+        return value
+
 class EditorConferenceListSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=True)
     conference = ConferenceSerializer(many=True)
@@ -28,17 +39,9 @@ class EditorConferenceListSerializer(serializers.ModelSerializer):
         model = models.EditorConference
         fields = '__all__'
 
-class EditorConferenceCreateSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(write_only=True)
-
-    class Meta:
+class EditorConferenceCreateSerializer(BaseConferenceCreateSerializer):
+    class Meta(BaseConferenceCreateSerializer.Meta):
         model = models.EditorConference
-        fields = ['email']
-
-    def validate_email(self, value):
-        if not value:
-            raise serializers.ValidationError("Email field is required.")
-        return value
 
 class ReviewerConferenceListSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=True)
@@ -47,17 +50,9 @@ class ReviewerConferenceListSerializer(serializers.ModelSerializer):
         model = models.ReviewerConference
         fields = '__all__'
 
-class ReviewerConferenceCreateSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(write_only=True)
-
-    class Meta:
-        model = models.EditorConference
-        fields = ['email']
-
-    def validate_email(self, value):
-        if not value:
-            raise serializers.ValidationError("Email field is required.")
-        return value
+class ReviewerConferenceCreateSerializer(BaseConferenceCreateSerializer):
+    class Meta(BaseConferenceCreateSerializer.Meta):
+        model = models.ReviewerConference
 
 class ReviewerPaperListSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=True)
