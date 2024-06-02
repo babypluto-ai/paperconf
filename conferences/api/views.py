@@ -1,13 +1,11 @@
-from django.shortcuts import get_object_or_404
-from django.db.models import Q
-# from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, filters
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
-from . import serializers
+from . import serializers, permissions, pagination
 from conferences import models
-from . import permissions
-from . import pagination
 
 class ConferenceListView(generics.ListAPIView):
     queryset = models.Conference.objects.all()
@@ -32,6 +30,11 @@ class ConferenceDetailView(generics.RetrieveUpdateDestroyAPIView):
         self.check_object_permissions(self.request, obj)
         return obj
     
+    def perform_destroy(self, instance):
+        if not self.request.user.is_superuser and not permissions.IsConferenceEditor().has_object_permission(self.request, self, instance):
+            raise PermissionDenied("You do not have permission to delete this conference.")
+        instance.delete()
+
     def get_view_name(self):
         return "Conference Detail"
 

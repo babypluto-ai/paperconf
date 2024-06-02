@@ -7,7 +7,4 @@ class IsConferenceEditor(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         
-        if request.user.is_authenticated:
-            return EditorConference.objects.filter(user=request.user, conference=obj).exists()
-        
-        return False
+        return request.user.is_authenticated and EditorConference.objects.filter(user=request.user, conference=obj).exists()
