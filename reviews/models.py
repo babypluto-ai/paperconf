@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 from papers.models import Paper
-from user_app.models import CustomUser
 
 class Review(models.Model):
     paper = models.ForeignKey(Paper, on_delete=models.CASCADE)
