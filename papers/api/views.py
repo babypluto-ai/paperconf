@@ -17,7 +17,7 @@ class PaperListView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Paper.objects.filter(user=user)
+        return Paper.objects.filter(user=user).select_related('conference', 'user')
     
     def get_view_name(self):
         return "List of Papers (User)"
@@ -28,7 +28,7 @@ class PaperDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Paper.objects.filter(user=user)
+        return Paper.objects.filter(user=user).select_related('conference', 'user')
     
     def get_view_name(self):
         return "Detail View of Paper (User)"
