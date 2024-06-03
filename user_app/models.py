@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
+from phonenumber_field.modelfields import PhoneNumberField
+
 from .consts_ import COUNTRY_CHOICES
 
 class CustomUserManager(BaseUserManager):
@@ -25,17 +27,17 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, first_name, last_name, affiliation, country, password, **extra_fields)
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    email = models.EmailField(unique=True)
-    alternate_email = models.EmailField(blank=True)
-    phone = models.CharField(max_length=20, blank=True, null=True)
-    affiliation = models.CharField(max_length=100)
-    country = models.CharField(max_length=50, choices=COUNTRY_CHOICES )
-    created_at = models.DateTimeField(default=timezone.now)
+    first_name = models.CharField(max_length=50, verbose_name="First Name")
+    last_name = models.CharField(max_length=50, verbose_name="Last Name")
+    email = models.EmailField(unique=True, verbose_name="Email Address")
+    alternate_email = models.EmailField(blank=True, verbose_name="Alternate Email")
+    phone = PhoneNumberField(blank=True, null=True, verbose_name="Phone Number")
+    affiliation = models.CharField(max_length=100, verbose_name="Affiliation")
+    country = models.CharField(max_length=50, choices=COUNTRY_CHOICES, verbose_name="Country")
+    created_at = models.DateTimeField(default=timezone.now, verbose_name="Created At")
 
-    is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False, verbose_name="Staff Status")
+    is_active = models.BooleanField(default=True, verbose_name="Active Status")
 
     objects = CustomUserManager()
 

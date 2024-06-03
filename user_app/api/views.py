@@ -3,9 +3,9 @@ from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 
 from user_app.api import serializers
-
 from user_app import models
 
 class UserRegisterView(generics.CreateAPIView):
@@ -22,7 +22,7 @@ class UserLoginView(generics.GenericAPIView):
 
         user = authenticate(request, username=email, password=password)
 
-        if user is not None:
+        if user:
             refresh = RefreshToken.for_user(user)
             return Response({
                 'refresh': str(refresh),
@@ -32,15 +32,16 @@ class UserLoginView(generics.GenericAPIView):
             return Response({"error": "Invalid email or password"}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UserLogoutView(generics.GenericAPIView):
-    serializer_class = serializers.UserSerializer
-    def post(self, request):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
         try:
             refresh_token = request.data['refresh_token']
             token = RefreshToken(refresh_token)
             token.blacklist()
             return Response({"message": "User successfully logged out."}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+        except TokenError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDetailView(generics.RetrieveUpdateAPIView):
     queryset = models.CustomUser.objects.all()

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'django_filters',
+    'phonenumber_field',
     # local
     'user_app.apps.UserAppConfig',
     'conferences.apps.ConferencesConfig',
