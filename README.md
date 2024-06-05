@@ -40,34 +40,34 @@ PaperConf is a RESTful API for managing academic conferences, papers, reviewers,
 
 ### Users
 
-`POST /api/user/register/`: Register a new user.
-`POST /api/user/login/`: Log in with existing credentials.
-`POST /api/user/logout/`: Log out the current user.
-`GET /api/user/info/`: Retrieve details of the logged-in user.
+`POST /api/user/register/`: Register a new user.<br>
+`POST /api/user/login/`: Log in with existing credentials.<br>
+`POST /api/user/logout/`: Log out the current user.<br>
+`GET /api/user/info/`: Retrieve details of the logged-in user.<br>
 
 ### Conferences
 
-`POST /api/conferences/conf/new`: Create a new conference.
-`GET /api/conferences/`: List all conferences.
-`GET /api/conferences/conf/<str:conf>/`: Retrieve details of a specific conference.
-`PUT /api/conferences/conf/<str:conf>/`: Update details of a conference.
-`DELETE /api/conferences/conf/<str:conf>/`: Delete a conference.
+`POST /api/conferences/conf/new`: Create a new conference.<br>
+`GET /api/conferences/`: List all conferences.<br>
+`GET /api/conferences/conf/<str:conf>/`: Retrieve details of a specific conference.<br>
+`PUT /api/conferences/conf/<str:conf>/`: Update details of a conference.<br>
+`DELETE /api/conferences/conf/<str:conf>/`: Delete a conference.<br>
 
 ### Papers
 
-`POST /api/papers/conf/<str:conf>/paper/new/`: Submit a new paper.
-`GET /api/papers/user/`: List all papers.
-`GET /api/papers/user/paper/<int:pk>/`: Retrieve details of a specific paper.
-`PUT /api/papers/user/paper/<int:pk>/`: Update details of a paper.
-`DELETE /api/papers/user/paper/<int:pk>/`: Delete a paper.
+`POST /api/papers/conf/<str:conf>/paper/new/`: Submit a new paper.<br>
+`GET /api/papers/user/`: List all papers.<br>
+`GET /api/papers/user/paper/<int:pk>/`: Retrieve details of a specific paper.<br>
+`PUT /api/papers/user/paper/<int:pk>/`: Update details of a paper.<br>
+`DELETE /api/papers/user/paper/<int:pk>/`: Delete a paper.<br>
 
 ### Reviews
 
-`POST /api/reviews/conf/<str:conf>/paper/<int:pk>/review/create/`: Submit a new review for a paper.
-`GET /api/reviews/conf/<str:conf>/paper/<int:pk>/`: List all reviews.
-`GET /api/reviews/conf/<str:conf>/paper/<int:pk>/review/<int:review_pk>/`: Retrieve details of a specific review.
-`PUT /api/reviews/conf/<str:conf>/paper/<int:pk>/review/<int:review_pk>/`: Update details of a review.
-`DELETE /api/reviews/conf/<str:conf>/paper/<int:pk>/review/<int:review_pk>/`: Delete a review.
+`POST /api/reviews/conf/<str:conf>/paper/<int:pk>/review/create/`: Submit a new review for a paper.<br>
+`GET /api/reviews/conf/<str:conf>/paper/<int:pk>/`: List all reviews.<br>
+`GET /api/reviews/conf/<str:conf>/paper/<int:pk>/review/<int:review_pk>/`: Retrieve details of a specific review.<br>
+`PUT /api/reviews/conf/<str:conf>/paper/<int:pk>/review/<int:review_pk>/`: Update details of a review.<br>
+`DELETE /api/reviews/conf/<str:conf>/paper/<int:pk>/review/<int:review_pk>/`: Delete a review.<br>
 
 ## Authentication
 
